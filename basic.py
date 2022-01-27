@@ -1,5 +1,8 @@
 # digets 
 
+from turtle import left, right
+
+
 DIGITS = '0123456789'
 
 
@@ -131,7 +134,42 @@ class Lexer:
         else:
             return Token(TT_FLOAT, float(num_str))
             
-            
+  
+ # NODES
+
+class numberNode:
+    def __init__(self, tok):
+        self.tok = tok
+    def __repr__(self):
+        return f'{slef.tok}'
+
+
+
+
+class BinOpNode:
+    def __init__(self, left_node, op_tok, right_node):
+        self.left_node = left_node
+        self.op_tok = op_tok
+        self.right_node = right_node
+    
+    def __repr__(self):
+        return f'({self.left_node}, {self.op_tok}, {self.right_node})'
+    
+# parser 
+class Parser:
+    def __init__(self, tokens): #  I MADE THE EXECUTIVE DESISHION TO ADD SELF 
+        self.tokens = tokens
+        self.tok_idx = 1
+        self.advance()
+
+    def advance():
+        self.tok_idx += 1
+        if self.tok_idx < len(self.tokens):
+            self.current_tok = self.tokens[self.tok_idx]
+        return self.current_tok
+
+    # make the expr/term/factor from sintax.txt 
+
 
 
 # run 
