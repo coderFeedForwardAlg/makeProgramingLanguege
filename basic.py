@@ -1,6 +1,12 @@
-# digets 
+#bugs 
+# the first number is droped 
+# if the last part is moltiplication it is droped 
+# 4 + 4 + 4 *    yealds      (TT_INT:4, PLUS, ())
+# the droping first part problem seams to be present in earlyer vershions of the code(i dident knodes) so it probibly not from the new stuff 
 
-from turtle import left, right
+
+
+# digets 
 
 
 DIGITS = '0123456789'
@@ -137,11 +143,11 @@ class Lexer:
   
  # NODES
 
-class numberNode:
+class NumberNode:
     def __init__(self, tok):
         self.tok = tok
     def __repr__(self):
-        return f'{slef.tok}'
+        return f'{self.tok}'
 
 
 
@@ -157,25 +163,68 @@ class BinOpNode:
     
 # parser 
 class Parser:
-    def __init__(self, tokens): #  I MADE THE EXECUTIVE DESISHION TO ADD SELF 
+    def __init__(self, tokens): 
         self.tokens = tokens
         self.tok_idx = 1
         self.advance()
 
-    def advance():
+    def advance(self):
         self.tok_idx += 1
         if self.tok_idx < len(self.tokens):
             self.current_tok = self.tokens[self.tok_idx]
         return self.current_tok
+    
+    
+    
+    # pars method 
+    def parse(self):
+        res = self.expr()
+        return res
+
+
 
     # make the expr/term/factor from sintax.txt 
+    def factor(self):
+        tok = self.current_tok
 
+        if tok.type in (TT_INT, TT_FLOAT):
+            self.advance()
+            return NumberNode(tok)
+    def term(self): 
+        return self.bin_op(self.factor, (TT_MUL, TT_DIV))
+
+    def expr(self):
+        return self.bin_op(self.term, (TT_PLUS, TT_MINUS))
+
+    def bin_op(self, func, ops):
+        left = func() 
+
+        while self.current_tok.type in ops:
+            op_tok = self.current_tok
+            self.advance()
+            right = ()
+            left = BinOpNode(left, op_tok, right) 
+        
+        return left  
+        
+        
+
+    
 
 
 # run 
 
 def run(fn, text):
     lexer = Lexer(fn, text)
+
     tokens, error = lexer.make_tokens()
 
-    return tokens, error
+    if error: return None, error
+
+    # make AST 
+    parser = Parser(tokens)
+    ast = parser.parse()
+
+    return ast, None
+
+    
